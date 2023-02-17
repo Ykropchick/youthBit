@@ -82,8 +82,13 @@ WSGI_APPLICATION = 'Onboarding.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'youthbit',
+        'USER': 'Shkolenko02-03-2004',
+        'PASSWORD': 'FTtrqml6u8xR',
+        'HOST': 'ep-red-wave-605810.eu-central-1.aws.neon.tech',
+        'PORT': '5432',
+
     }
 }
 
