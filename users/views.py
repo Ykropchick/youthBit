@@ -1,15 +1,13 @@
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
-from .serializers import ContactSerializer,UserSerializer
-from .models import Contact,CustomUser
+from .models import Contact, CustomUser
+from .serializers import ContactSerializer, UserSerializer
 
-
-
-
+from Onboarding.settings import MEDIA_URL
 class ContactViewSet(ModelViewSet):
     serializer_class = ContactSerializer
     permission_classes = (IsAuthenticated,)
@@ -24,13 +22,13 @@ class GetCurUserDataView(GenericAPIView):
         user = self.request.user
         return user
 
-    def get(self,request,*args,**kwargs):
+    def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset,*args,*kwargs)
+        serializer = self.serializer_class(queryset, *args, *kwargs)
         return Response(serializer.data)
 
 
-class GetSuckersListView(ListModelMixin,GenericAPIView):
+class GetSuckersListView(ListModelMixin, GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -44,8 +42,5 @@ class GetSuckersListView(ListModelMixin,GenericAPIView):
         users = CustomUser.objects.filter(pk=HR_pk)
         return users
 
-    def get(self,request,*args,**kwargs):
-        return self.list(request,*args,**kwargs)
-
-
-
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
