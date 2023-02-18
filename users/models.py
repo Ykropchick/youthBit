@@ -6,7 +6,7 @@ from .managers import CustomUserManager
 class Department(models.Model):
     name = models.CharField('Название',max_length=100)
     head = models.CharField('Имя главы', max_length=40)
-    place = models.CharField('Местоположение',max_length=150)
+    place = models.CharField('Местоположение',max_length=150,null=True)
 
 
 class CustomUser(AbstractBaseUser,PermissionsMixin):

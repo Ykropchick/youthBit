@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -25,7 +26,10 @@ SECRET_KEY = 'django-insecure-lnr)!n$tn5v^ll_x(bcgw!o%8o)$hefi4x($1w_hs^dhe-iuni
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '.vercel.app',
+    ".now.sh",
+]
 
 
 # Application definition
@@ -42,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 
     'users.apps.UsersConfig',
+    'welcomejorney.apps.WelcomejorneyConfig',
+    'notifications.apps.NotificationsConfig',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +86,13 @@ WSGI_APPLICATION = 'Onboarding.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'youthbit',
+        'USER': 'Shkolenko02-03-2004',
+        'PASSWORD': 'FTtrqml6u8xR',
+        'HOST': 'ep-red-wave-605810.eu-central-1.aws.neon.tech',
+        'PORT': '5432',
+
     }
 }
 
@@ -129,6 +140,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -168,3 +182,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
