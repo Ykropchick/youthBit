@@ -9,3 +9,4 @@ python-dotenv==0.21.1
 pytz==2022.7.1
 sqlparse==0.4.3
 pillow==9.4.0
+psycorg2-binary
