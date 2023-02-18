@@ -1,6 +1,8 @@
 from rest_framework.serializers import ModelSerializer
 
-from .models import Contact,CustomUser
+from .models import Contact, CustomUser
+
+
 class ContactSerializer(ModelSerializer):
     class Meta:
         model = Contact
@@ -10,5 +12,4 @@ class ContactSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('email','firstname','lastname','department',"HR_link",
-'position')
+        fields = "__all__"
