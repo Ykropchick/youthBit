@@ -2,9 +2,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import ListModelMixin
-
-from .serializers import ContactSerializer,UserSerializer
+from rest_framework.mixins import ListModelMixin,CreateModelMixin
+from welcomejorney.permissions import IsHRUserOrReadOnly
+from .serializers import ContactSerializer,UserSerializer,UserCreateSerializer
 from .models import Contact,CustomUser
 
 
@@ -49,3 +49,11 @@ class GetSuckersListView(ListModelMixin,GenericAPIView):
 
 
 
+class CreateUserView(CreateModelMixin,GenericAPIView):
+    serializer_class = UserCreateSerializer
+    permission_classes = (IsHRUserOrReadOnly,)
+    def post(self,request):
+        return self.create(request)
+
+    def perform_create(self, serializer):
+        serializer.save(HR_link = self.request.user.pk)

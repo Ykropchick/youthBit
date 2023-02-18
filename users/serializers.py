@@ -12,4 +12,12 @@ class ContactSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
+        fields = ('email','firstname','lastname','department',"HR_link",
+'position')
+
+
+class UserCreateSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
         fields = "__all__"
+
