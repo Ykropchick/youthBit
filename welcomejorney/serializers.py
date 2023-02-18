@@ -1,13 +1,18 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Module,Manual
+from .models import Module,Manual,File
 
 
-class ModuleSerializer(ModelSerializer):
+class ModuleListSerializer(ModelSerializer):
     class Meta:
         model = Module
-        fields = ('pk','name','description','department')
+        fields = ('pk','name','description')
 
-class ManualSerializer(ModuleSerializer):
+class ManualListSerializer(ModelSerializer):
     class Meta:
         model = Manual
-        fields = ('name','link','module')
+        fields = ('pk','name','description')
+
+class FileListSerializer(ModelSerializer):
+    class Meta:
+        model = File
+        fields = ('path',)

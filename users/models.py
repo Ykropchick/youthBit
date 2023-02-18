@@ -28,3 +28,9 @@ default=False)
     USERNAME_FIELD = 'email'
 
     objects = CustomUserManager()
+
+
+class Contact(models.Model):
+    telegram = models.CharField('Телеграмм',max_length=50)
+    phone_number = models.CharField('Номер телефона',max_length=13)
+    user = models.ForeignKey(CustomUser,models.CASCADE,verbose_name='Владелец')

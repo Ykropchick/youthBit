@@ -1,14 +1,9 @@
-from django.urls import path,include
-from rest_framework.routers import DefaultRouter
-from .views import (ModuleViewSet,ManualViewSet,ModuleByDepartmentView,\
-ManualByModuleView)
+from django.urls import path
+from .views import ModuleListView,ManualListView,FileListView
 
-router = DefaultRouter()
-router.register(r'modules',ModuleViewSet,basename='module')
-router.register(r'manuals',ManualViewSet,basename='manual')
 
 urlpatterns = [
-    path('',include(router.urls)),
-    path('modules/bydep/<int:department>',ModuleByDepartmentView.as_view()),
-    path('manuals/bymod/<int:module>',ManualByModuleView.as_view())
+    path('tutorials/',ModuleListView.as_view()),
+    path('tutorials/<int:module>',ManualListView.as_view()),
+    path('tutorials/manual/<int:manual>',FileListView.as_view()),
 ]

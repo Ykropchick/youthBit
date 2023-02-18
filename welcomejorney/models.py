@@ -10,6 +10,10 @@ null=True, verbose_name='Отдел')
 
 class Manual(models.Model):
     name = models.CharField('Название',max_length=60)
-    link = models.FileField('ссылка на документ',upload_to='manuals')
+    description = models.CharField('Описание',max_length=200)
     module = models.ForeignKey(Module,on_delete=models.CASCADE,verbose_name='Модуль')
 
+
+class File(models.Model):
+    path = models.FileField('ссылка на документ', upload_to='manuals')
+    manual = models.ForeignKey(Manual,models.CASCADE,verbose_name='Мануал')
