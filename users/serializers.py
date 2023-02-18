@@ -12,3 +12,10 @@ class UserSerializer(ModelSerializer):
         model = CustomUser
         fields = ('email','firstname','lastname','department',"HR_link",
 'position')
+
+
+class UserCreateSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('email','firstname','lastname','department',"HR_link",
+'position')
