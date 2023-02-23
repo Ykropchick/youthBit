@@ -9,5 +9,6 @@ class Notification(models.Model):
     date = models.DateTimeField('Дата создания',auto_now=True)
     is_readed = models.BooleanField(default=False)
     to = models.ForeignKey(user,on_delete=models.CASCADE,
-verbose_name='Адресат')
-    sender = models.BigIntegerField(verbose_name='Адресант',unique=False,null=True)
+                            verbose_name='Адресат', related_name="to")
+    sender = models.ForeignKey(user,on_delete=models.CASCADE,
+                            verbose_name='Адресант',related_name='sender')
