@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.db import models
 from .managers import CustomUserManager
 
 
@@ -13,6 +13,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('Электронная почта', unique=True)
     firstname = models.CharField('Имя', max_length=30)
     lastname = models.CharField('Фамилия', max_length=30)
+    avatar = models.ImageField(null=True, default=None, upload_to="avatars")
     department = models.ForeignKey(Department, on_delete=models.SET_NULL,
                                    null=True, verbose_name='Отдел')
     is_HR = models.BooleanField('Сотрудник HR', default=False)

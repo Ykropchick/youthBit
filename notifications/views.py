@@ -1,22 +1,32 @@
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
+from rest_framework.permissions import IsAuthenticated
 
-from .serializers import NotificationSerializer
-from welcomejorney.permissions import IsHRUserOrReadOnly
+from .serializers import NotificationListSerializer, NotificationRetrieveSerializer
 from .models import Notification
 
-class NotificationViewSet(ModelViewSet):
-    serializer_class = NotificationSerializer
-    permission_classes = (IsHRUserOrReadOnly,)
+class NotificationListView(ListModelMixin,GenericAPIView):
+    serializer_class = NotificationListSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
         notifications = Notification.objects.filter(to=user)
         return notifications
 
-    def perform_create(self, serializer):
-        serializer.save(sender=self.request.user.pk)
+    def get(self,request,*args,**kwargs):
+        return self.list(request,*args,**kwargs)
+
+class NotificationDetailView(RetrieveModelMixin,GenericAPIView):
+    serializer_class = NotificationRetrieveSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        notifications = Notification.objects.filter(to=user)
+        return notifications
+
+    def get(self,request,*args,**kwargs):
+        return self.retrieve(request,*args,**kwargs)
 
 
 
