@@ -14,5 +14,5 @@ class Activity(models.Model):
 
 class ActivityFiles(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
-    path = models.FileField()
+    path = models.FileField('ссылка на документ',upload_to='manuals')
     activity_id = models.ForeignKey(Activity, on_delete=models.CASCADE)
