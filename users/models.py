@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-from .managers import CustomUserManager
+from .managers import CustomUserManager, HrManager, NewbieManager
 
 
 class Department(models.Model):
@@ -14,20 +14,31 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     firstname = models.CharField('Имя', max_length=30)
     lastname = models.CharField('Фамилия', max_length=30)
     avatar = models.ImageField(null=True, default=None, upload_to="avatars")
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL,
-                                   null=True, verbose_name='Отдел')
-    is_HR = models.BooleanField('Сотрудник HR', default=False)
-    HR_link = models.BigIntegerField('Курирующий HR', null=True, unique=False)
-    start_date = models.DateField('Дата начала работы', auto_now=True)
-    is_started = models.BooleanField('Зашёл ли сотрудник на портал',
-                                     default=False)
-    position = models.CharField('Должность', max_length=100)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
 
     objects = CustomUserManager()
+
+
+class Newbie(models.Model):
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL,
+                                   null=True, verbose_name='Отдел')
+    start_date = models.DateField('Дата начала работы', auto_now=True)
+    is_started = models.BooleanField('Зашёл ли сотрудник на портал',
+                                     default=False)
+    position = models.CharField('Должность', max_length=100)
+
+    objects = NewbieManager()
+
+
+class Hr(models.Model):
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    newbies = models.ManyToManyField(Newbie)
+
+    objects = HrManager()
 
 
 class Contact(models.Model):
