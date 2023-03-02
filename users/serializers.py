@@ -1,8 +1,10 @@
-from rest_framework.serializers import ModelSerializer,SlugRelatedField, CharField
+from rest_framework.serializers import ModelSerializer, CharField
 
-from .models import Contact, CustomUser, Department, Newbie,Hr
+from .models import CustomUser, Department, Newbie,Hr
+
 
 class DepartmentSerializer(ModelSerializer):
+
     class Meta:
         model = Department
         fields = ('name','head','place')
@@ -30,7 +32,6 @@ class SubUserAbstractSerializer(ModelSerializer):
             email=validated_data['email'], password=validated_data['password'],
             firstname=validated_data['firstname'],
             lastname=validated_data['lastname'])
-
         validated_data.pop('email')
         validated_data.pop('password')
         validated_data.pop('firstname')

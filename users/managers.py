@@ -6,11 +6,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
-
-
 from Onboarding.settings import MEDIA_ROOT, MEDIA_URL
 from utils import create_avatar
-
 
 
 class CustomUserManager(BaseUserManager):
@@ -40,28 +37,30 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None,*args,**kwargs):
-
         return self.create_user(email,password,is_staff=True,is_superuser=True,*args,**kwargs)
 
 
-class HrManager(models.Manager):
+class UserSubClassAbstractManager(models.Manager):
 
-    def get_hr_by_user(self,user):
+    class Meta:
+        abstract = True
+
+    def get_subobject_byuser(self,user):
+        return super().get_queryset().get(user=user)
+
+
+class HrManager(UserSubClassAbstractManager):
+
+    def is_user_hr(self,user):
         try:
             hr = super().get_queryset().get(user=user)
-            return hr
+            return True
         except ObjectDoesNotExist:
-            return 'Not found'
+            return False
 
 
-class NewbieManager(models.Manager):
-
-    def get_newbie_by_user(self,user):
-        try:
-            newbie = super().get_queryset().get(user=user)
-            return newbie
-        except ObjectDoesNotExist:
-            return 'Not found'
+class NewbieManager(UserSubClassAbstractManager):
+    pass
 
 
 

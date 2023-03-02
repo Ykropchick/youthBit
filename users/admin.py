@@ -25,7 +25,6 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
-
 admin.site.register(Department)
 admin.site.register(Newbie)
 admin.site.register(Hr)
