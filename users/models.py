@@ -22,6 +22,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
 
+class Hr(models.Model):
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+
+    objects = HrManager()
+
+
 class Newbie(models.Model):
     user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL,
@@ -30,15 +36,10 @@ class Newbie(models.Model):
     is_started = models.BooleanField('Зашёл ли сотрудник на портал',
                                      default=False)
     position = models.CharField('Должность', max_length=100)
+    hr = models.ForeignKey(Hr,on_delete=models.SET_NULL,null=True,
+                           related_name='hr')
 
     objects = NewbieManager()
-
-
-class Hr(models.Model):
-    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
-    newbies = models.ManyToManyField(Newbie)
-
-    objects = HrManager()
 
 
 class Contact(models.Model):

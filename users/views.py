@@ -1,41 +1,64 @@
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import ListModelMixin,CreateModelMixin
+from rest_framework.mixins import CreateModelMixin,DestroyModelMixin,UpdateModelMixin
 
 from .permissions import IsHRUserOrReadOnly
-from .serializers import NewbieSerializer,HrSerializer
-from .models import Hr,Newbie
+from .serializers import NewbieSerializer,HrSerializer,UpdateNewbieSerializer,UserSerializer,UpdateHrSerializer
+from .models import Hr,Newbie,CustomUser
 
 
-class GetCurUserDataView(GenericAPIView,ListModelMixin):
+class GetCurUserDataView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         if Hr.objects.is_user_hr(self.request.user):
             self.serializer_class = HrSerializer
-            return Hr.objects.get_subobject_byuser(self.request.user)
+            hr = Hr.objects.get_subobject_byuser(self.request.user)
+            hr.newbies = hr.hr.all()
+            return hr
         self.serializer_class = NewbieSerializer
-        return Newbie.objects.get_subobject_byuser(self.request.user)
+        newbie = Newbie.objects.get_subobject_byuser(self.request.user)
+        return newbie
 
     def get(self,request,*args,**kwargs):
         queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset,*args,*kwargs)
+        serializer = self.serializer_class(queryset, *args, *kwargs)
         return Response(serializer.data)
+
+
+class DeleteUserView(DestroyModelMixin,GenericAPIView):
+    serializer_class = UserSerializer
+    permission_classes = (IsHRUserOrReadOnly,)
+
+    def get_queryset(self):
+        return CustomUser.objects.all()
+
+    def delete(self,request,*args,**kwargs):
+        return self.destroy(request,*args,**kwargs)
 
 
 class CreateNewbieView(CreateModelMixin,GenericAPIView):
     serializer_class = NewbieSerializer
     permission_classes = (IsHRUserOrReadOnly,)
 
-    def post(self,request):
-        return self.create(request)
+    def post(self,request,*args,**kwargs):
+        return self.create(request,*args,**kwargs)
 
     def perform_create(self, serializer):
         cur_HR = Hr.objects.get_subobject_byuser(self.request.user.id)
-        new_Newbie = serializer.save()
-        cur_HR.newbies.add(new_Newbie)
-        cur_HR.save()
+        new_Newbie = serializer.save(hr = cur_HR)
+
+
+class UpdateNewbieView(UpdateModelMixin,GenericAPIView):
+    serializer_class = UpdateNewbieSerializer
+    permission_classes = (IsHRUserOrReadOnly,)
+
+    def get_queryset(self):
+        return Newbie.objects.all()
+
+    def patch(self,request,*args,**kwargs):
+        return self.partial_update(request,*args,**kwargs)
 
 
 class CreateHrView(CreateModelMixin,GenericAPIView):
@@ -44,3 +67,14 @@ class CreateHrView(CreateModelMixin,GenericAPIView):
 
     def post(self,request):
         return self.create(request)
+
+
+class UpdateHrView(UpdateModelMixin,GenericAPIView):
+    serializer_class = UpdateHrSerializer
+    permission_classes = (IsHRUserOrReadOnly,)
+
+    def get_queryset(self):
+        return Hr.objects.all()
+
+    def patch(self,request,*args,**kwargs):
+        return self.partial_update(request,*args,**kwargs)
