@@ -23,20 +23,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Hr(models.Model):
-    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
 
     objects = HrManager()
 
 
 class Newbie(models.Model):
-    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL,
                                    null=True, verbose_name='Отдел')
     start_date = models.DateField('Дата начала работы', auto_now=True)
     is_started = models.BooleanField('Зашёл ли сотрудник на портал',
                                      default=False)
     position = models.CharField('Должность', max_length=100)
-    hr = models.ForeignKey(Hr,on_delete=models.SET_NULL,null=True,
+    hr = models.ForeignKey(Hr, on_delete=models.SET_NULL, null=True,
                            related_name='hr')
 
     objects = NewbieManager()

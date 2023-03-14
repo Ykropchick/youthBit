@@ -14,7 +14,7 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('pk','email', 'firstname', 'lastname', 'avatar')
+        fields = ('pk', 'email', 'firstname', 'lastname', 'avatar')
 
 
 class SubUserAbstractSerializer(ModelSerializer):
@@ -45,26 +45,26 @@ class NewbieRelatedSerializer(SubUserAbstractSerializer):
 
     class Meta:
         model = Newbie
-        fields = ('user','department','position')
+        fields = ('user', 'department', 'position')
 
 
 class HrSerializer(SubUserAbstractSerializer):
-    newbies = NewbieRelatedSerializer(many=True,read_only=True)
+    newbies = NewbieRelatedSerializer(many=True, read_only=True)
 
     class Meta:
         model = Hr
-        fields = ('email', 'password', 'firstname', 'lastname', 'user','newbies')
+        fields = ('email', 'password', 'firstname', 'lastname', 'user', 'newbies')
 
 
 class NewbieSerializer(SubUserAbstractSerializer):
     department = DepartmentSerializer(many=False, read_only=True)
     position = CharField(max_length=20)
-    hr = HrSerializer(many=False,read_only=True)
+    hr = HrSerializer(many=False, read_only=True)
 
     class Meta:
         model = Newbie
         fields = ('email', 'password', 'firstname', 'lastname', 'user',
-                  'department', 'position','hr')
+                  'department', 'position', 'hr')
 
 
 class SubUserUpdateAbstractSerializer(SubUserAbstractSerializer):
@@ -74,23 +74,23 @@ class SubUserUpdateAbstractSerializer(SubUserAbstractSerializer):
             instance.user.firstname = validated_data.pop('firstname')
         if validated_data.get('lastname') is not None:
             instance.user.lastname = validated_data.pop('lastname')
-        return super().update(instance,validated_data)
+        return super().update(instance, validated_data)
 
     class Meta:
         abstract = True
 
 
 class UpdateNewbieSerializer(SubUserUpdateAbstractSerializer):
-    department = DepartmentSerializer(many=False,read_only=True)
-    hr = HrSerializer(many=False,read_only=True)
+    department = DepartmentSerializer(many=False, read_only=True)
+    hr = HrSerializer(many=False, read_only=True)
 
     class Meta:
         model = Newbie
-        fields = ('firstname','lastname','user','department','position','hr')
+        fields = ('firstname', 'lastname', 'user', 'department', 'position', 'hr')
 
 
 class UpdateHrSerializer(SubUserUpdateAbstractSerializer):
 
     class Meta:
         model = Hr
-        fields = ('firstname','lastname','user')
+        fields = ('firstname', 'lastname', 'user')

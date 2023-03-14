@@ -1,15 +1,18 @@
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin,DestroyModelMixin,UpdateModelMixin
+from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
+                                   UpdateModelMixin)
 
 from .permissions import IsHRUserOrReadOnly
-from .serializers import NewbieSerializer,HrSerializer,UpdateNewbieSerializer,UserSerializer,UpdateHrSerializer
-from .models import Hr,Newbie,CustomUser
+from .serializers import (NewbieSerializer, HrSerializer,
+                          UpdateNewbieSerializer, UserSerializer,
+                          UpdateHrSerializer)
+from .models import Hr, Newbie, CustomUser
 
 
 class GetCurUserDataView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         if Hr.objects.is_user_hr(self.request.user):
@@ -21,60 +24,60 @@ class GetCurUserDataView(GenericAPIView):
         newbie = Newbie.objects.get_subobject_byuser(self.request.user)
         return newbie
 
-    def get(self,request,*args,**kwargs):
+    def get(self, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, *args, *kwargs)
         return Response(serializer.data)
 
 
-class DeleteUserView(DestroyModelMixin,GenericAPIView):
+class DeleteUserView(DestroyModelMixin, GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsHRUserOrReadOnly,)
 
     def get_queryset(self):
         return CustomUser.objects.all()
 
-    def delete(self,request,*args,**kwargs):
-        return self.destroy(request,*args,**kwargs)
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
-class CreateNewbieView(CreateModelMixin,GenericAPIView):
+class CreateNewbieView(CreateModelMixin, GenericAPIView):
     serializer_class = NewbieSerializer
-    permission_classes = (IsHRUserOrReadOnly,)
+    permission_classes = (IsHRUserOrReadOnly, )
 
-    def post(self,request,*args,**kwargs):
-        return self.create(request,*args,**kwargs)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        cur_HR = Hr.objects.get_subobject_byuser(self.request.user.id)
-        new_Newbie = serializer.save(hr = cur_HR)
+        cur_hr = Hr.objects.get_subobject_byuser(self.request.user.id)
+        serializer.save(hr=cur_hr)
 
 
-class UpdateNewbieView(UpdateModelMixin,GenericAPIView):
+class UpdateNewbieView(UpdateModelMixin, GenericAPIView):
     serializer_class = UpdateNewbieSerializer
-    permission_classes = (IsHRUserOrReadOnly,)
+    permission_classes = (IsHRUserOrReadOnly, )
 
     def get_queryset(self):
         return Newbie.objects.all()
 
-    def patch(self,request,*args,**kwargs):
-        return self.partial_update(request,*args,**kwargs)
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 
-class CreateHrView(CreateModelMixin,GenericAPIView):
+class CreateHrView(CreateModelMixin, GenericAPIView):
     serializer_class = HrSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAdminUser, )
 
-    def post(self,request):
+    def post(self, request):
         return self.create(request)
 
 
-class UpdateHrView(UpdateModelMixin,GenericAPIView):
+class UpdateHrView(UpdateModelMixin, GenericAPIView):
     serializer_class = UpdateHrSerializer
-    permission_classes = (IsHRUserOrReadOnly,)
+    permission_classes = (IsHRUserOrReadOnly, )
 
     def get_queryset(self):
         return Hr.objects.all()
 
-    def patch(self,request,*args,**kwargs):
-        return self.partial_update(request,*args,**kwargs)
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)

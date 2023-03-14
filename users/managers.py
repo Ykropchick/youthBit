@@ -11,9 +11,9 @@ from utils import create_avatar
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None,*args, **kwargs):
+    def create_user(self, email, password=None, *args, **kwargs):
         email = self.normalize_email(email)
-        user = self.model(email=email,*args,**kwargs)
+        user = self.model(email=email, *args, **kwargs)
         user.set_password(password)
         user.save()
 
@@ -36,8 +36,8 @@ class CustomUserManager(BaseUserManager):
                          )
         return user
 
-    def create_superuser(self, email, password=None,*args,**kwargs):
-        return self.create_user(email,password,is_staff=True,is_superuser=True,*args,**kwargs)
+    def create_superuser(self, email, password=None, *args, **kwargs):
+        return self.create_user(email, password, is_staff=True, is_superuser=True, *args, **kwargs)
 
 
 class UserSubClassAbstractManager(models.Manager):
@@ -45,13 +45,13 @@ class UserSubClassAbstractManager(models.Manager):
     class Meta:
         abstract = True
 
-    def get_subobject_byuser(self,user):
+    def get_subobject_byuser(self, user):
         return super().get_queryset().get(user=user)
 
 
 class HrManager(UserSubClassAbstractManager):
 
-    def is_user_hr(self,user):
+    def is_user_hr(self, user):
         try:
             hr = super().get_queryset().get(user=user)
             return True
@@ -61,8 +61,3 @@ class HrManager(UserSubClassAbstractManager):
 
 class NewbieManager(UserSubClassAbstractManager):
     pass
-
-
-
-
-
