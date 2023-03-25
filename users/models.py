@@ -37,7 +37,7 @@ class Newbie(models.Model):
                                      default=False)
     position = models.CharField('Должность', max_length=100)
     hr = models.ForeignKey(Hr, on_delete=models.SET_NULL, null=True,
-                           related_name='hr')
+                           related_name='newbies')
 
     objects = NewbieManager()
 

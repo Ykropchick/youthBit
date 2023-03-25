@@ -56,10 +56,17 @@ class HrSerializer(SubUserAbstractSerializer):
         fields = ('email', 'password', 'firstname', 'lastname', 'user', 'newbies')
 
 
+class HrRelatedSerializer(SubUserAbstractSerializer):
+
+    class Meta:
+        model = Hr
+        fields = ('user', )
+
+
 class NewbieSerializer(SubUserAbstractSerializer):
     department = DepartmentSerializer(many=False, read_only=True)
     position = CharField(max_length=20)
-    hr = HrSerializer(many=False, read_only=True)
+    hr = HrRelatedSerializer(many=False, read_only=True)
 
     class Meta:
         model = Newbie

@@ -1,32 +1,23 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from .models import Notification
 from django.contrib.auth import get_user_model
 
 user_model = get_user_model()
 
-class CustomUserInfoSerializer(ModelSerializer):
+
+class CustomUserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = user_model
-        fields = ('pk','firstname','lastname')
+        fields = ('pk', 'firstname', 'lastname')
 
 
-class NotificationListSerializer(ModelSerializer):
+class NotificationSerializer(serializers.ModelSerializer):
+    to = serializers.PrimaryKeyRelatedField(queryset=user_model.objects.all())
+    sender = serializers.PrimaryKeyRelatedField(queryset=user_model.objects.all())
+    date = serializers.DateTimeField(read_only=True)
+    is_read = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Notification
-        fields = ('pk','title','date')
-
-
-class NotificationRetrieveSerializer(ModelSerializer):
-    sender = CustomUserInfoSerializer(many=False,read_only=True)
-    class Meta:
-        model = Notification
-        fields = ('title','description','sender','date')
-
-
-class NotificationCreateSerializer(ModelSerializer):
-    to = CustomUserInfoSerializer(many=False,read_only=True)
-    sender = CustomUserInfoSerializer(many=False,read_only=True)
-    class Meta:
-        model = Notification
-        fields = ('title','description','to','sender')
+        fields = ('pk', 'title', 'description', 'to', 'sender', 'date', 'is_read')

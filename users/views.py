@@ -14,19 +14,19 @@ from .models import Hr, Newbie, CustomUser
 class GetCurUserDataView(GenericAPIView):
     permission_classes = (IsAuthenticated, )
 
-    def get_queryset(self):
+    def get_object(self):
         if Hr.objects.is_user_hr(self.request.user):
             self.serializer_class = HrSerializer
             hr = Hr.objects.get_subobject_byuser(self.request.user)
-            hr.newbies = hr.hr.all()
             return hr
         self.serializer_class = NewbieSerializer
         newbie = Newbie.objects.get_subobject_byuser(self.request.user)
         return newbie
 
-    def get(self, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, *args, *kwargs)
+    def get(self, request, *args, **kwargs):
+
+        sub_user_object = self.get_object()
+        serializer = self.get_serializer(sub_user_object, many=False)
         return Response(serializer.data)
 
 

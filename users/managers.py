@@ -46,14 +46,15 @@ class UserSubClassAbstractManager(models.Manager):
         abstract = True
 
     def get_subobject_byuser(self, user):
-        return super().get_queryset().get(user=user)
+        subuser = super().get_queryset().get(user=user)
+        return subuser
 
 
 class HrManager(UserSubClassAbstractManager):
 
     def is_user_hr(self, user):
         try:
-            hr = super().get_queryset().get(user=user)
+            self.get_subobject_byuser(user=user)
             return True
         except ObjectDoesNotExist:
             return False
