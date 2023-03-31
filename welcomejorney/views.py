@@ -62,15 +62,6 @@ class ManualListView(ListModelMixin, GenericAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class ManualDetailView(RetrieveModelMixin, GenericAPIView):
-    serializer_class = ManualSerializer
-    permission_classes = (IsAuthenticated, )
-    queryset = Manual.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, *kwargs)
-
-
 class ManualCreateView(CreateModelMixin, GenericAPIView):
     serializer_class = ManualSerializer
     permission_classes = (IsHRUserOrReadOnly, )

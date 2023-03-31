@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'welcomejorney.apps.WelcomejorneyConfig',
     'notifications.apps.NotificationsConfig',
-    'tests.apps.TestsConfig',
 ]
 
 MIDDLEWARE = [
