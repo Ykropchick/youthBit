@@ -1,44 +1,100 @@
-from rest_framework.mixins import ListModelMixin
 from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import (ListModelMixin, RetrieveModelMixin,
+                                   CreateModelMixin, UpdateModelMixin,
+                                   DestroyModelMixin)
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ModuleListSerializer,ManualListSerializer,FileListSerializer
-from .models import Module,Manual,File
+
+from .models import Module, Manual
+from .serializers import ModuleSerializer, ManualSerializer
+from users.permissions import IsHRUserOrReadOnly
 
 
-class ModuleListView(ListModelMixin,GenericAPIView):
-    serializer_class = ModuleListSerializer
+class ModuleListView(ListModelMixin, GenericAPIView):
+    serializer_class = ModuleSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        department = self.request.user.department
-        modules = Module.objects.filter(department=department)
-        return modules
+        department = self.kwargs['department']
+        return Module.objects.get_module_bydepartment(department)
 
-    def get(self,request,*args,**kwargs):
-        return self.list(request,*args,**kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
-class ManualListView(ListModelMixin,GenericAPIView):
-    serializer_class = ManualListSerializer
-    permission_classes = (IsAuthenticated,)
+class ModuleCreateView(CreateModelMixin, GenericAPIView):
+    serializer_class = ModuleSerializer
+    permission_classes = (IsHRUserOrReadOnly, )
+
+    def post(self, request, *args, **kwargs):
+        self.create(request, *args, **kwargs)
+
+
+class ModuleUpdateView(UpdateModelMixin, GenericAPIView):
+    serializer_class = ModuleSerializer
+    permission_classes = (IsHRUserOrReadOnly, )
+    queryset = Module.objects.all()
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+
+class ModuleDeleteView(DestroyModelMixin, GenericAPIView):
+    serializer_class = ModuleSerializer
+    permission_classes = (IsHRUserOrReadOnly, )
+    queryset = Module.objects.all()
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class ManualListView(ListModelMixin, GenericAPIView):
+    serializer_class = ManualSerializer
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         module = self.kwargs['module']
-        manuals = Manual.objects.filter(module=module)
-        return manuals
+        return Manual.objects.get_manuals_bymodule(module)
 
-    def get(self,request,*args,**kwargs):
-        return self.list(request,*args,**kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
-class FileListView(ListModelMixin,GenericAPIView):
-    serializer_class = FileListSerializer
-    permission_classes = (IsAuthenticated,)
+class ManualDetailView(RetrieveModelMixin, GenericAPIView):
+    serializer_class = ManualSerializer
+    permission_classes = (IsAuthenticated, )
+    queryset = Manual.objects.all()
 
-    def get_queryset(self):
-        manual = self.kwargs['manual']
-        files = File.objects.filter(manual=manual)
-        return files
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, *kwargs)
 
-    def get(self,request,*args,**kwargs):
-        return self.list(request,*args,**kwargs)
+
+class ManualCreateView(CreateModelMixin, GenericAPIView):
+    serializer_class = ManualSerializer
+    permission_classes = (IsHRUserOrReadOnly, )
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class ManualUpdateView(UpdateModelMixin, GenericAPIView):
+    serializer_class = ManualSerializer
+    permission_classes = (IsHRUserOrReadOnly, )
+    queryset = Manual.objects.all()
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+
+class ManualDeleteView(DestroyModelMixin, GenericAPIView):
+    serializer_class = ManualSerializer
+    permission_classes = (IsHRUserOrReadOnly, )
+    queryset = Manual.objects.all()
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

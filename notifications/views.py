@@ -1,22 +1,48 @@
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import ListModelMixin, CreateModelMixin
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import Response
 
 from .serializers import NotificationSerializer
-from welcomejorney.permissions import IsHRUserOrReadOnly
 from .models import Notification
+from users.models import CustomUser
 
-class NotificationViewSet(ModelViewSet):
+
+class NotificationListView(ListModelMixin, GenericAPIView):
     serializer_class = NotificationSerializer
-    permission_classes = (IsHRUserOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
         notifications = Notification.objects.filter(to=user)
         return notifications
 
-    def perform_create(self, serializer):
-        serializer.save(sender=self.request.user.pk)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
+class NotificationCreateView(CreateModelMixin, GenericAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = (IsAuthenticated,)
 
+    def post(self, request, *args, **kwargs):
+        to = CustomUser.objects.get(pk=request.data['to'])
+        sender = CustomUser.objects.get(pk=request.data['sender'])
+        return self.create(request, to=to, sender=sender, *args, **kwargs)
+
+
+class NotificationUpdateStatusView(GenericAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        notification_id = self.kwargs['pk']
+        notifications = Notification.objects.get(pk=notification_id)
+        return notifications
+
+    def patch(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, data=request.data, many=False, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(is_read=True)
+        return Response(serializer.data)

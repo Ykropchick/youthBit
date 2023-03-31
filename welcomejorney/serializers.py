@@ -1,18 +1,19 @@
-from rest_framework.serializers import ModelSerializer
-from .models import Module,Manual,File
+from rest_framework import serializers
+
+from .models import Module, Manual
 
 
-class ModuleListSerializer(ModelSerializer):
+class ModuleSerializer(serializers.ModelSerializer):
+    pk = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Module
-        fields = ('pk','name','description')
+        fields = ('pk', 'department', 'name', 'description')
 
-class ManualListSerializer(ModelSerializer):
+
+class ManualSerializer(serializers.ModelSerializer):
+    pk = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Manual
-        fields = ('pk','name','description')
-
-class FileListSerializer(ModelSerializer):
-    class Meta:
-        model = File
-        fields = ('path',)
+        fields = ('pk', 'module', 'name', 'description', 'file')

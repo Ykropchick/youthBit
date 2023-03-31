@@ -12,19 +12,23 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+import environ
+
+env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lnr)!n$tn5v^ll_x(bcgw!o%8o)$hefi4x($1w_hs^dhe-iuni'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG')
 
 ALLOWED_HOSTS = [
     '.vercel.app',
@@ -44,15 +48,18 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
+    "corsheaders",
 
     'users.apps.UsersConfig',
     'welcomejorney.apps.WelcomejorneyConfig',
     'notifications.apps.NotificationsConfig',
+    'tests.apps.TestsConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -60,7 +67,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'Onboarding.urls'
+CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS')
+CORS_ALLOW_CREDENTIALS = env.bool('CORS_ALLOW_CREDENTIALS')
+
+ROOT_URLCONF = env.str('ROOT_URLCONF')
 
 TEMPLATES = [
     {
@@ -78,22 +88,16 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Onboarding.wsgi.application'
+WSGI_APPLICATION = env.str('WSGI_APPLICATION')
 
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'youthbit',
-        'USER': 'Shkolenko02-03-2004',
-        'PASSWORD': 'FTtrqml6u8xR',
-        'HOST': 'ep-red-wave-605810.eu-central-1.aws.neon.tech',
-        'PORT': '5432',
 
-    }
+    'default': env.db_url('SQLITE_URL')
+
 }
 
 
@@ -116,9 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': env.tuple('DEFAULT_AUTHENTICATION_CLASSES')
 
 }
 
@@ -126,39 +128,41 @@ REST_FRAMEWORK = {
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = env.str('LANGUAGE_CODE')
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = env.str('TIME_ZONE')
 
-USE_I18N = True
+USE_I18N = env.bool('USE_I18N')
 
-USE_TZ = True
+USE_TZ = env.bool('USE_TZ')
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = env.str('STATIC_URL')
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = env.str('MEDIA_URL')
+MEDIA_ROOT = BASE_DIR / env.str('MEDIA_ROOT')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = env.str('DEFAULT_AUTO_FIELD')
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = env.str('AUTH_USER_MODEL')
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': False,
-    'UPDATE_LAST_LOGIN': False,
+    'ACCESS_TOKEN_LIFETIME': timedelta(
+        days=env.int('ACCESS_TOKEN_LIFETIME')),
+    'REFRESH_TOKEN_LIFETIME': timedelta(
+        days=env.int('REFRESH_TOKEN_LIFETIME')),
+    'ROTATE_REFRESH_TOKENS': env.bool('ROTATE_REFRESH_TOKENS'),
+    'BLACKLIST_AFTER_ROTATION': env.bool('BLACKLIST_AFTER_ROTATION'),
+    'UPDATE_LAST_LOGIN': env.bool('UPDATE_LAST_LOGIN'),
 
-    'ALGORITHM': 'HS256',
+    'ALGORITHM': env.str('ALGORITHM'),
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
@@ -166,22 +170,26 @@ SIMPLE_JWT = {
     'JWK_URL': None,
     'LEEWAY': 0,
 
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    'AUTH_HEADER_TYPES': env.tuple('AUTH_HEADER_TYPES'),
+    'AUTH_HEADER_NAME': env.str('AUTH_HEADER_NAME'),
+    'USER_ID_FIELD': env.str('USER_ID_FIELD'),
+    'USER_ID_CLAIM': env.str('USER_ID_CLAIM'),
+    'USER_AUTHENTICATION_RULE': env.str('USER_AUTHENTICATION_RULE'),
 
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+    'AUTH_TOKEN_CLASSES': env.tuple('AUTH_TOKEN_CLASSES'),
+    'TOKEN_TYPE_CLAIM': env.str('TOKEN_TYPE_CLAIM'),
+    'TOKEN_USER_CLASS': env.str('TOKEN_USER_CLASS'),
 
-    'JTI_CLAIM': 'jti',
+    'JTI_CLAIM': env.str('JTI_CLAIM'),
 
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': env.str('SLIDING_TOKEN_REFRESH_EXP_CLAIM'),
+    'SLIDING_TOKEN_LIFETIME': timedelta(
+        minutes=env.int('SLIDING_TOKEN_LIFETIME')),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(
+        days=env.int('SLIDING_TOKEN_REFRESH_LIFETIME')),
 }
+
 
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+
