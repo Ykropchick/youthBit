@@ -8,4 +8,7 @@ urlpatterns = [
     path('api/auth/',include('users.urls')),
     path('api/',include('welcomejorney.urls')),
     path('api/',include('notifications.urls')),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
