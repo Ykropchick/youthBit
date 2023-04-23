@@ -2,7 +2,8 @@
 db.sqlite3
 /**/__pycache__/
 /**/.DS_Store/
-/media/**
+/media/
 .env
 .idea
 .coverage
+/staticfiles_build/

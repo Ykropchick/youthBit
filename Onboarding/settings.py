@@ -30,10 +30,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = [
-    '.vercel.app',
-    ".now.sh",
-]
+ALLOWED_HOSTS = []
 
 
 # Application definition

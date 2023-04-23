@@ -26,7 +26,7 @@ class ModuleCreateView(CreateModelMixin, GenericAPIView):
     permission_classes = (IsHRUserOrReadOnly, )
 
     def post(self, request, *args, **kwargs):
-        self.create(request, *args, **kwargs)
+        return self.create(request, *args, **kwargs)
 
 
 class ModuleUpdateView(UpdateModelMixin, GenericAPIView):
