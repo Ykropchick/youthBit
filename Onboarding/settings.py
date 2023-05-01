@@ -19,7 +19,7 @@ env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-environ.Env.read_env(BASE_DIR / '.env')
+environ.Env.read_env(BASE_DIR / 'env/django' / os.environ.get('ENV_FILE', default='.env.dev'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -92,7 +92,7 @@ WSGI_APPLICATION = env.str('WSGI_APPLICATION')
 
 DATABASES = {
 
-    'default': env.db_url('SQLITE_URL')
+    'default': env.db_url('MYSQL_URL')
 
 }
 
@@ -137,6 +137,7 @@ USE_TZ = env.bool('USE_TZ')
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = env.str('STATIC_URL')
+STATIC_ROOT = os.path.join(BASE_DIR, env.str('STATIC_ROOT'))
 
 MEDIA_URL = env.str('MEDIA_URL')
 MEDIA_ROOT = BASE_DIR / env.str('MEDIA_ROOT')
@@ -186,6 +187,4 @@ SIMPLE_JWT = {
 }
 
 
-STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 

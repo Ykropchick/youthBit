@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    env_file:
+      - 'env/docker/.env.db'
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  web:
+    build: .
+    restart: on-failure
+    env_file:
+      - 'env/docker/.env.web'
+    command: gunicorn Onboarding.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - '8000'
+    volumes:
+      - 'static_volume:/app/staticfiles'
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx
+    restart: on-failure
+    volumes:
+      - 'static_volume:/app/staticfiles'
+    ports:
+      - '8000:80'
+    depends_on:
+      - web
+
+volumes:
+  static_volume:
