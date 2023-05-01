@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from welcomejorney.models import Module,Manual
+from welcomejorney.models import Module, Manual
 from users.models import Department, CustomUser, Hr
 
 
@@ -144,7 +144,7 @@ class ManualTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Manual.objects.get(pk=manual.pk).name, 'test1')
         self.assertEqual(Manual.objects.get(pk=manual.pk).description, 'test1')
-        self.assertIn('test1',Manual.objects.get().file.name)
+        self.assertIn('test1', Manual.objects.get().file.name)
 
     def test_update_manual_partial(self):
         department = Department.objects.create(name='Test', head='Test',
@@ -183,13 +183,13 @@ class ManualTestCase(APITestCase):
         url = reverse('delete_manual', kwargs={'pk': manual.pk})
         response = self.client.delete(url, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Manual.objects.all().count(),0)
+        self.assertEqual(Manual.objects.all().count(), 0)
 
     def test_list_module(self):
         department = Department.objects.create(name='Test', head='Test',
-                                                   place='Test')
+                                               place='Test')
         user = CustomUser.objects.create_user(email='admin@admin.ru',
-                                                  password='Test1234test9876', )
+                                              password='Test1234test9876', )
         module = Module.objects.create(department=department, name='test', description='test')
 
         file1 = SimpleUploadedFile('test.html', b'file_content', content_type='text/plain')

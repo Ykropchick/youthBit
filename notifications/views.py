@@ -5,7 +5,6 @@ from rest_framework.views import Response
 
 from .serializers import NotificationSerializer
 from .models import Notification
-from users.models import CustomUser
 
 
 class NotificationListView(ListModelMixin, GenericAPIView):
@@ -26,12 +25,10 @@ class NotificationCreateView(CreateModelMixin, GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        to = CustomUser.objects.get(pk=request.data['to'])
-        sender = CustomUser.objects.get(pk=request.data['sender'])
-        return self.create(request, to=to, sender=sender, *args, **kwargs)
+        return self.create(request, *args, **kwargs)
 
 
-class NotificationUpdateStatusView(GenericAPIView):
+class NotificationUpdateView(GenericAPIView):
     serializer_class = NotificationSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -44,5 +41,5 @@ class NotificationUpdateStatusView(GenericAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, data=request.data, many=False, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save(is_read=True)
+        serializer.save()
         return Response(serializer.data)

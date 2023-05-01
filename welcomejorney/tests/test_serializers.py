@@ -55,7 +55,8 @@ class ModuleSerializerTestCase(APITestCase):
                                                place='test')
         module = Module.objects.create(name='test', description='test', department=department)
         module1 = Module.objects.create(name='test', description='test', department=department)
-        data = [{'pk': module.pk, 'department': department.pk, 'name': module.name, 'description': module.description},
+        data = [{'pk': module.pk, 'department': department.pk, 'name': module.name,
+                 'description': module.description},
                 {'pk': module1.pk, 'department': department.pk, 'name': module1.name,
                  'description': module1.description}]
         queryset = Module.objects.all()
@@ -66,7 +67,8 @@ class ModuleSerializerTestCase(APITestCase):
         department = Department.objects.create(name='test', head='test',
                                                place='test')
         module = Module.objects.create(name='test', description='test', department=department)
-        data = {'pk': module.pk, 'department': department.pk, 'name': module.name, 'description': module.description}
+        data = {'pk': module.pk, 'department': department.pk, 'name': module.name,
+                'description': module.description}
         serializer = ModuleSerializer(module, many=False)
         self.assertEqual(serializer.data, data)
 
@@ -132,10 +134,10 @@ class ManualSerializerTestCase(APITestCase):
         manual = Manual.objects.create(name='test', description='test', module=module, file=file)
         manual1 = Manual.objects.create(name='test', description='test', module=module, file=file)
 
-        data = [{'pk': manual.pk, 'module': module.pk, 'name': manual.name, 'description': manual.description,
-                 'file': manual.file.url},
-                {'pk': manual1.pk, 'module': module.pk, 'name': manual1.name, 'description': manual1.description,
-                 'file': manual1.file.url}]
+        data = [{'pk': manual.pk, 'module': module.pk, 'name': manual.name,
+                 'description': manual.description, 'file': manual.file.url},
+                {'pk': manual1.pk, 'module': module.pk, 'name': manual1.name,
+                 'description': manual1.description, 'file': manual1.file.url}]
         queryset = Manual.objects.all()
         serializer = ManualSerializer(queryset, many=True)
         self.assertEqual(serializer.data, data)
@@ -146,7 +148,8 @@ class ManualSerializerTestCase(APITestCase):
         module = Module.objects.create(name='test', description='test', department=department)
         file = SimpleUploadedFile('test.html', b'file_content', 'plain/text')
         manual = Manual.objects.create(name='test', description='test', module=module, file=file)
-        data = {'pk': manual.pk, 'module': module.pk, 'name': manual.name, 'description': manual.description,
+        data = {'pk': manual.pk, 'module': module.pk, 'name': manual.name,
+                'description': manual.description,
                 'file': manual.file.url}
         serializer = ManualSerializer(manual, many=False)
         self.assertEqual(serializer.data, data)
