@@ -3,7 +3,8 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
 from .views import (GetCurUserDataView, CreateNewbieView, CreateHrView,
-                    UpdateNewbieView, DeleteUserView, UpdateHrView)
+                    UpdateNewbieView, DeleteUserView, UpdateHrView,
+                    DepartmentListView)
 
 urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -14,4 +15,5 @@ urlpatterns = [
     path('hr/update/<int:pk>/', UpdateHrView.as_view(), name='update_hr'),
     path('newbie/register/', CreateNewbieView.as_view(), name='create_newbie'),
     path('newbie/update/<int:pk>/', UpdateNewbieView.as_view(), name='update_newbie'),
+    path('department/getall/', DepartmentListView.as_view(), name='list_department'),
 ]

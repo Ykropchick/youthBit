@@ -35,7 +35,7 @@ DB_PORT=3306 #port exposed in docker-compose file
 <p>env/django/.env.dev</p>
 
 ```dotenv
-SECRET_KEY= #can be generated(see below)
+SECRET_KEY="django-insecure-(YOUR_SECRET_KEY)" #can be generated(see below)
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 CORS_ALLOW_ALL_ORIGINS=True

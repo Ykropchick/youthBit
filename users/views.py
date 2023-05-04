@@ -2,13 +2,22 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   UpdateModelMixin)
+                                   UpdateModelMixin, ListModelMixin)
 
 from .permissions import IsHRUserOrReadOnly
 from .serializers import (NewbieSerializer, HrSerializer,
                           UpdateNewbieSerializer, UserSerializer,
-                          UpdateHrSerializer)
-from .models import Hr, Newbie, CustomUser
+                          UpdateHrSerializer, DepartmentSerializer)
+from .models import Hr, Newbie, CustomUser, Department
+
+
+class DepartmentListView(GenericAPIView,ListModelMixin):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = DepartmentSerializer
+    queryset = Department.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class GetCurUserDataView(GenericAPIView):
