@@ -6,7 +6,7 @@ while ! nc -z db "$DB_PORT"; do
 done
 echo "Mysql started"
 
-python manage.py makemigrations
+python manage.py makemigrations notifications users welcomejorney
 python manage.py migrate
 
 exec "$@"
