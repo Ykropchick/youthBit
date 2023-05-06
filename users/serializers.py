@@ -6,7 +6,7 @@ from .models import CustomUser, Department, Newbie, Hr
 class DepartmentSerializer(ModelSerializer):
     class Meta:
         model = Department
-        fields = ('name', 'head', 'place')
+        fields = ('pk', 'name', 'head', 'place')
 
 
 class UserSerializer(ModelSerializer):
@@ -39,39 +39,41 @@ class NewbieRelatedSerializer(SubUserAbstractSerializer):
 
     class Meta:
         model = Newbie
-        fields = ('user', 'department', 'position')
+        fields = ('pk','user', 'department', 'position')
 
 
 class HrSerializer(SubUserAbstractSerializer):
+    pk = IntegerField(read_only=True)
     newbies = NewbieRelatedSerializer(many=True, read_only=True)
 
     class Meta:
         model = Hr
-        fields = ('email', 'password', 'firstname', 'lastname', 'user', 'newbies')
+        fields = ('pk', 'email', 'password', 'firstname', 'lastname', 'user', 'newbies')
 
 
 class HrRelatedSerializer(SubUserAbstractSerializer):
     class Meta:
         model = Hr
-        fields = ('user',)
+        fields = ('pk', 'user',)
 
 
 class NewbieSerializer(SubUserAbstractSerializer):
+    pk = IntegerField(read_only=True)
     department = DepartmentSerializer(many=False, read_only=True)
     department_id = IntegerField(write_only=True)
     position = CharField(max_length=20)
     hr = HrRelatedSerializer(many=False, read_only=True)
-    hr_id = IntegerField(write_only=True)
+    #hr_id = IntegerField(write_only=True)
 
     class Meta:
         model = Newbie
-        fields = ('email', 'password', 'firstname', 'lastname', 'user',
-                  'department', 'position', 'hr', 'department_id', 'hr_id')
+        fields = ('pk', 'email', 'password', 'firstname', 'lastname', 'user',
+                  'department', 'position', 'hr', 'department_id',) #'hr_id'
 
     def create(self, validated_data):
         validated_data['department'] = Department.objects.get(pk=
                                                               validated_data.pop('department_id'))
-        validated_data['hr'] = Hr.objects.get(pk=validated_data.pop('hr_id'))
+        #validated_data['hr'] = Hr.objects.get(pk=validated_data.pop('hr_id'))
         return super().create(validated_data)
 
 

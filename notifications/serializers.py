@@ -23,8 +23,10 @@ class NotificationSerializer(serializers.ModelSerializer):
         fields = ('pk', 'title', 'description', 'to', 'to_id', 'sender', 'sender_id', 'date', 'is_read')
 
     def update(self, instance, validated_data):
-        validated_data['to'] = user_model.objects.get(pk=validated_data.pop('to_id'))
-        validated_data['sender'] = user_model.objects.get(pk=validated_data.pop('sender_id'))
+        try:
+            validated_data['to'] = user_model.objects.get(pk=validated_data.pop('to_id'))
+            validated_data['sender'] = user_model.objects.get(pk=validated_data.pop('sender_id'))
+        except:pass
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
