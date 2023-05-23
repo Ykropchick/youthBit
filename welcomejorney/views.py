@@ -1,12 +1,28 @@
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import (ListModelMixin, RetrieveModelMixin,
-                                   CreateModelMixin, UpdateModelMixin,
-                                   DestroyModelMixin)
+from rest_framework.mixins import (ListModelMixin, CreateModelMixin,
+                                   UpdateModelMixin, DestroyModelMixin)
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Module, Manual
 from .serializers import ModuleSerializer, ManualSerializer
-from users.permissions import IsHRUserOrReadOnly
+from users.permissions import IsHRUserOrReadOnly, IsHRUser
+
+
+class AllModuleListView(ListModelMixin, GenericAPIView):
+    queryset = Module.objects.all()
+    permission_classes = (IsHRUser,)
+    serializer_class = ModuleSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+class AllManualListView(ListModelMixin, GenericAPIView):
+    queryset = Manual.objects.all()
+    permission_classes = (IsHRUser, )
+    serializer_class = ManualSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class ModuleListView(ListModelMixin, GenericAPIView):
