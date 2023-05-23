@@ -2,7 +2,8 @@ from django.urls import path
 
 from .views import (ModuleListView, ManualListView, ManualCreateView,
                     ManualUpdateView, ManualDeleteView, ModuleCreateView,
-                    ModuleUpdateView, ModuleDeleteView)
+                    ModuleUpdateView, ModuleDeleteView, AllModuleListView,
+                    AllManualListView)
 
 urlpatterns = [
     path('tutorials/module/<int:department>/', ModuleListView.as_view(),
@@ -21,4 +22,8 @@ urlpatterns = [
          name='update_manual'),
     path('tutorials/manual/delete/<int:pk>/', ManualDeleteView.as_view(),
          name='delete_manual'),
+    path('tutorials/module/getall/', AllModuleListView.as_view(),
+         name='get_all_modules'),
+    path('tutorials/manual/getall/', AllManualListView.as_view(),
+         name='get_all_modules')
 ]

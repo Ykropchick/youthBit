@@ -9,3 +9,8 @@ class IsHRUserOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS and request.user:
             return True
         return Hr.objects.is_user_hr(request.user)
+
+
+class IsHRUser(BasePermission):
+    def has_permission(self, request, view):
+        return Hr.objects.is_user_hr(request.user)
